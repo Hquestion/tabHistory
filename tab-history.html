@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <style>
+        .tab{
+            display: inline-block;
+            width: 100px;
+            height: 40px;
+            border: 1px solid #ccc;
+            border-radius: 40px;
+            text-align: center;
+            line-height: 40px;
+            cursor: pointer;
+        }
+        .tab-content {
+            border: 1px solid #ccc;
+            margin-top: 10px;
+            padding: 10px;
+        }
+    </style>
+</head>
+<body onload="ready()">
+    <div class="tab" onclick="switchTab(1)">tab1</div>
+    <div class="tab" onclick="switchTab(2)">tab2</div>
+<div class="tab-content" id="tab1-content" style="display: none">tab1 content</div>
+    <div class="tab-content" id="tab2-content" style="display: none">tab2 content</div>
+    <script>
+        function switchTab(id){
+            history.pushState(null, '', location.origin + location.pathname + '?tab=' + id);
+            syncTabStatus();
+        }
+        function ready(){
+            syncTabStatus();
+        }
+        function syncTabStatus(){
+            var map = parseQueryString();
+            if(map.tab === '1') {
+                document.title = 'tab1';
+                document.querySelectorAll('#tab1-content')[0].style.display = 'block';
+                document.querySelectorAll('#tab2-content')[0].style.display = 'none';
+            }else if(map.tab === '2'){
+                document.title = 'tab2';
+                document.querySelectorAll('#tab2-content')[0].style.display = 'block';
+                document.querySelectorAll('#tab1-content')[0].style.display = 'none';
+            }else {
+                history.replaceState(null, '', location.origin + location.pathname + '?tab=1');
+                syncTabStatus();
+            }
+        }
+        function parseQueryString(){
+            var strList = location.search.slice(1).split('&');
+            var map = {};
+            for(var i = 0; i < strList.length; i++) {
+                var mapList = strList[i].split('=');
+                map[mapList[0]] = mapList[1];
+            }
+            return map;
+        }
+    </script>
+</body>
+</html>
